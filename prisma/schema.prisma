@@ -1,0 +1,52 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                      String   @id @default(cuid())
+  role                    String   @default("user") // "user" | "admin"
+  phoneNumber             String?  @unique
+  telegramId              String?  @unique
+  telegramUsername        String?
+  firstName               String?
+  lastName                String?
+  age                     Int?
+  gender                  String?  // "Male" | "Female" | "Other"
+  canReceiveNotifications Boolean  @default(false)
+  authProvider            String   @default("web") // "web" | "telegram"
+  photoUrl                String?
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+}
+
+model OtpCode {
+  id          String   @id @default(cuid())
+  phoneNumber String
+  code        String
+  expiresAt   DateTime
+  verified    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
+
+model AnnouncementSchedule {
+  id           String    @id @default(cuid())
+  title        String?
+  message      String
+  imageUrl     String?
+  imageName    String?
+  scheduleType String    // "once" | "daily" | "weekly"
+  targetTime   String    // "HH:mm" (24-hour format, e.g. "09:30")
+  specificDate String?   // "YYYY-MM-DD" for one-time
+  dayOfWeek    Int?      // 0 = Sunday, 1 = Monday, 2 = Tuesday, 3 = Wednesday, 4 = Thursday, 5 = Friday, 6 = Saturday
+  isActive     Boolean   @default(true)
+  lastRunAt    DateTime?
+  nextRunAt    DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
